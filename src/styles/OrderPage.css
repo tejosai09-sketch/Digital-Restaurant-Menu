@@ -1,0 +1,58 @@
+.order-page-container {
+  padding: 16px;
+  text-align: center;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.success-checkmark-circle {
+  width: 80px;
+  height: 80px;
+  background: #E8F5E9;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #2E7D32;
+  font-size: 40px;
+  margin-bottom: 16px;
+  margin-top: 40px;
+}
+
+.live-timer-card {
+  background: #FFFDF0;
+  border: 2px solid #FFC20E;
+  padding: 24px;
+  border-radius: 16px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(255, 194, 14, 0.15);
+}
+
+.countdown-digits {
+  font-size: 48px;
+  margin: 0;
+  font-weight: 800;
+  color: #111111;
+  font-family: monospace;
+}
+
+.summary-card {
+  text-align: left;
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 24px;
+}
+
+.order-more-btn {
+  width: 100%;
+  background: #111111;
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 30px;
+  cursor: pointer;
+}

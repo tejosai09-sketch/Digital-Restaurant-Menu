@@ -1,0 +1,160 @@
+.home-container {
+  background-color: #ffffff;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Header Component Styles */
+.brand-header {
+  padding: 24px 20px 12px 20px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-family: 'Playfair Display', 'Georgia', serif; /* Script-like or elegant look */
+  font-size: 26px;
+  font-weight: 700;
+  color: #111111;
+  margin: 0;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: right;
+}
+
+.phone-icon {
+  background: #fffdf0;
+  padding: 8px;
+  border-radius: 50%;
+  color: #f59e0b;
+  font-size: 16px;
+}
+
+.phone-numbers {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.tagline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.stars {
+  color: #ffc20e;
+  font-size: 14px;
+  letter-spacing: 4px;
+  margin-bottom: 4px;
+}
+
+.tagline-text {
+  font-size: 13px;
+  color: #666666;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* SearchBar Component Styles */
+.search-box-container {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: #f8f8f8;
+  border: 1px solid #eeeeee;
+  border-radius: 25px;
+  font-size: 15px;
+  color: #111111;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #ffc20e;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 194, 14, 0.08);
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  color: #888888;
+  font-size: 16px;
+}
+
+/* Categories Component Styles */
+.categories-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 16px 16px 16px;
+}
+
+.category-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #f8f8f8;
+  border: 1px solid #f0f0f0;
+  color: #444444;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.category-pill.active {
+  background: #ffc20e;
+  color: #111111;
+  border-color: #ffc20e;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(255, 194, 14, 0.25);
+}
+
+.category-emoji {
+  font-size: 16px;
+}
