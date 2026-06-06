@@ -4,6 +4,8 @@ import '../styles/FoodCard.css';
 const FoodCard = ({ item, addToCart }) => {
   const isVeg = item.isVeg !== false;
 
+    
+
   return (
     <div className="food-card">
       <div className="image-container">
