@@ -5,6 +5,7 @@ import Categories from "../components/Categories";
 import Menu from "../components/Menu";
 import CartBar from "../components/CartBar";
 import "../styles/HomePage.css";
+import API_BASE_URL from "../api/api";
 
 const Home = ({ addToCart, cart, setCurrentPage }) => {
   const [menuItems, setMenuItems] = useState([]);
@@ -12,7 +13,7 @@ const Home = ({ addToCart, cart, setCurrentPage }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/menu")
+    fetch(`${API_BASE_URL}/menu`)
       .then((res) => res.json())
       .then((result) => {
         const items = result.data.map((item) => ({
