@@ -1,0 +1,122 @@
+/* AdsSection.css - Modern, Mobile-First */
+
+.menu-ads-section {
+  padding: 0 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ads-slider {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--bg-card);
+}
+
+.ads-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.ads-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.menu-ad-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  min-height: 140px;
+  background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+  position: relative;
+  border-radius: var(--radius-lg);
+}
+
+.menu-ad-card.style-2 {
+  background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
+}
+
+.menu-ad-card.style-3 {
+  background: linear-gradient(135deg, #fce7f3 0%, #ffffff 100%);
+}
+
+.menu-ad-info {
+  flex: 1;
+  z-index: 2;
+  padding-right: 12px;
+}
+
+.menu-ad-info span {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menu-ad-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.menu-ad-info p {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.menu-ad-info button {
+  background: var(--text-dark);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.menu-ad-info button:hover {
+  opacity: 0.9;
+}
+
+.menu-ad-card img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  border: 3px solid white;
+}
+
+.ads-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.ads-dots button {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-medium);
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.ads-dots button.active-dot {
+  width: 16px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+}

@@ -8,15 +8,17 @@ const Header = () => {
         <div className="logo-section">
           {/* Replace src string with your local logo path if needed */}
           <div style={{
-            background: '#ffc20e', 
-            width: '45px', 
-            height: '45px', 
+            background: 'var(--primary)', 
+            color: 'white',
+            width: '40px', 
+            height: '40px', 
             borderRadius: '50%', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            fontSize: '20px',
-            fontWeight: 'bold'
+            fontSize: '18px',
+            fontWeight: 'bold',
+            boxShadow: 'var(--shadow-sm)'
           }}>🍳</div>
           <h1 className="brand-name">The Masala House</h1>
         </div>

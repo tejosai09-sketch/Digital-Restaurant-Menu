@@ -1,19 +1,27 @@
+/* CartBar.css - Sticky, Safe-Area Friendly Checkout Bar */
+
 .cart-bar-container {
   position: fixed;
-  bottom: 12px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: 'calc(100% - 24px)';
-  maxWidth: 456px;
-  background: #FFC20E;
-  padding: 12px 16px;
-  border-radius: 20px;
+  width: calc(100% - 40px);
+  max-width: 440px; /* Constrain inside app wrapper */
+  background: var(--primary);
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  z-index: 2000;
+  padding: 12px 16px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg), 0 10px 20px -5px rgba(249, 115, 22, 0.4);
+  z-index: 100;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cart-bar-container:active {
+  transform: translateX(-50%) scale(0.98);
 }
 
 .cart-bar-left {
@@ -23,32 +31,32 @@
 }
 
 .cart-icon-circle {
-  background: #111111;
-  color: #ffffff;
-  width: 44px;
-  height: 44px;
+  background: rgba(255, 255, 255, 0.2);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
   position: relative;
-  fontSize: 20px;
 }
 
 .cart-badge-count {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  background: #ef4444;
-  color: #ffffff;
-  border-radius: 50%;
+  top: -4px;
+  right: -4px;
+  background: white;
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 800;
   width: 18px;
   height: 18px;
-  font-size: 11px;
-  font-weight: 700;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .cart-text-info {
@@ -57,27 +65,35 @@
 }
 
 .cart-title-meta {
+  font-size: 15px;
   font-weight: 700;
-  font-size: 16px;
-  color: #111111;
+  letter-spacing: 0.5px;
 }
 
 .cart-subtitle-meta {
   font-size: 12px;
-  color: #333333;
-  margin-top: 1px;
+  opacity: 0.9;
+  font-weight: 500;
 }
 
 .view-cart-btn {
-  background: #111111;
-  color: #ffffff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
+  background: transparent;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.view-cart-btn span {
+  background: white;
+  color: var(--primary);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
 }

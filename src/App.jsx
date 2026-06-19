@@ -40,7 +40,7 @@ function App() {
   const clearCart = () => setCart([]);
 
   return (
-    <div className="app-container" style={{ maxWidth: '480px', margin: '0 auto', background: '#f9f9f9', minHeight: '100vh', position: 'relative', fontFamily: 'sans-serif' }}>
+    <div className="app-wrapper">
       {currentPage === 'home' && (
         <Home 
           addToCart={addToCart} 

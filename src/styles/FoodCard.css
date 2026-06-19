@@ -1,19 +1,41 @@
+/* FoodCard.css - Modern & Thumb-friendly */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0 20px 20px 20px;
+}
+
+/* Tablet and larger: 2 columns */
+@media (min-width: 480px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .food-card {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: 1px solid #f0f0f0;
+  flex-direction: row;
+  height: 120px;
+  border: 1px solid var(--border-light);
+}
+
+.food-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .image-container {
+  width: 120px;
+  height: 100%;
   position: relative;
-  width: 100%;
-  height: 140px;
+  flex-shrink: 0;
 }
 
 .food-image {
@@ -22,58 +44,63 @@
   object-fit: cover;
 }
 
-/* Veg / Non-Veg Border Box Badge */
 .badge-indicator {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #ffffff;
-  padding: 3px;
+  top: 8px;
+  left: 8px;
+  width: 16px;
+  height: 16px;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  background: white;
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-sm);
 }
 
 .badge-veg {
-  border: 1.5px solid #2e7d32;
+  border-color: #15803d; /* dark green */
 }
 
 .badge-nonveg {
-  border: 1.5px solid #c62828;
+  border-color: #b91c1c; /* dark red */
 }
 
 .dot-veg {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #2e7d32;
+  background-color: #15803d;
 }
 
 .triangle-nonveg {
   width: 0;
   height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 9px solid #c62828;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid #b91c1c;
 }
 
 .card-content {
   padding: 12px;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  flex: 1;
 }
 
 .food-title {
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   font-size: 15px;
   font-weight: 600;
-  color: #111111;
+  color: var(--text-dark);
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-footer {
@@ -84,26 +111,27 @@
 }
 
 .food-price {
-  /* Matching the exact UI Golden-Orange color */
-  color: #f59e0b; 
+  font-size: 16px;
   font-weight: 700;
-  font-size: 18px;
+  color: var(--text-dark);
 }
 
 .add-btn {
-  background: #FFC20E;
-  color: #111111;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--primary-light);
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 2px 6px rgba(255, 194, 14, 0.2);
-  transition: transform 0.1s ease;
+}
+
+.add-btn span {
+  font-size: 14px;
 }
 
 .add-btn:active {

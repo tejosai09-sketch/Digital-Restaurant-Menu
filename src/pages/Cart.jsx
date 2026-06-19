@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/CartPage.css";
 import API_BASE_URL from "../api/api";
 
@@ -12,15 +12,126 @@ const Cart = ({
   clearCart,
 }) => {
   const [orderType, setOrderType] = useState("table");
+  const [paymentMethod, setPaymentMethod] = useState("pay_to_bearer");
+
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
+
+  const [deliveryLatitude, setDeliveryLatitude] = useState(null);
+  const [deliveryLongitude, setDeliveryLongitude] = useState(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  useEffect(() => {
+    if (orderType === "table") {
+      setPaymentMethod("pay_to_bearer");
+    } else {
+      setPaymentMethod("cash_on_delivery");
+    }
+  }, [orderType]);
 
   const totalAmount = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setLocationLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        setDeliveryLatitude(lat);
+        setDeliveryLongitude(lng);
+
+        if (!deliveryAddress.trim()) {
+          setDeliveryAddress("Location shared via GPS");
+        }
+
+        setLocationLoading(false);
+      },
+      () => {
+        alert("Unable to get location. Please allow location permission.");
+        setLocationLoading(false);
+      }
+    );
+  };
+const handleOnlinePayment = async () => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/orders/create-payment-order`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: totalAmount,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!data.success) {
+      alert("Unable to initialize payment");
+      return false;
+    }
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: data.order.amount,
+      currency: data.order.currency,
+      name: "Masala House",
+      description: "Restaurant Order Payment",
+      order_id: data.order.id,
+
+      handler: async function (response) {
+        window.paymentResult = {
+          success: true,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+        };
+      },
+
+      prefill: {
+        name: customerName || "Guest",
+        contact: customerPhone || "",
+      },
+
+      theme: {
+        color: "#f97316",
+      },
+    };
+
+    const razorpay = new window.Razorpay(options);
+
+    return new Promise((resolve) => {
+      razorpay.on("payment.failed", function () {
+        resolve(false);
+      });
+
+      razorpay.open();
+
+      const checkPayment = setInterval(() => {
+        if (window.paymentResult?.success) {
+          clearInterval(checkPayment);
+          resolve(window.paymentResult);
+        }
+      }, 500);
+    });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
 
@@ -45,7 +156,22 @@ const Cart = ({
         return;
       }
     }
+let paymentStatus = "pending";
+let razorpayOrderId = null;
+let razorpayPaymentId = null;
 
+if (paymentMethod === "online") {
+  const paymentResult = await handleOnlinePayment();
+
+  if (!paymentResult) {
+    alert("Payment cancelled or failed");
+    return;
+  }
+
+  paymentStatus = "paid";
+  razorpayOrderId = paymentResult.razorpay_order_id;
+  razorpayPaymentId = paymentResult.razorpay_payment_id;
+}
     const orderData = {
       restaurant_id: 1,
       order_type: orderType,
@@ -53,7 +179,13 @@ const Cart = ({
       customer_phone: orderType === "delivery" ? customerPhone : "",
       table_number: orderType === "table" ? tableNumber : null,
       delivery_address: orderType === "delivery" ? deliveryAddress : null,
+      delivery_latitude: orderType === "delivery" ? deliveryLatitude : null,
+      delivery_longitude: orderType === "delivery" ? deliveryLongitude : null,
+      payment_method: paymentMethod,
       total_amount: totalAmount,
+      payment_status: paymentStatus,
+razorpay_order_id: razorpayOrderId,
+razorpay_payment_id: razorpayPaymentId,
       items: cart.map((item) => ({
         id: item.id,
         name: item.name,
@@ -85,6 +217,7 @@ const Cart = ({
         totalAmount,
         estimatedTime: 15,
         status: "Pending",
+        paymentMethod,
       });
 
       clearCart();
@@ -103,80 +236,83 @@ const Cart = ({
         </button>
 
         <div>
-          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "bold" }}>
-            Review Your Order
-          </h2>
-          <p style={{ margin: "4px 0 0", color: "#777", fontSize: "13px" }}>
-            Confirm your items and order details
-          </p>
+          <h2>Review Your Order</h2>
+          <p>Confirm your items and order details</p>
         </div>
       </div>
 
       {cart.length === 0 ? (
         <div className="empty-cart-box">
-          <div style={{ fontSize: "42px" }}>🛒</div>
+          <div className="empty-cart-icon">🛒</div>
           <h3>Your cart is empty</h3>
           <p>Add some delicious items to continue.</p>
-          <button onClick={() => setCurrentPage("home")} className="place-order-btn">
+          <button
+            onClick={() => setCurrentPage("home")}
+            className="place-order-btn"
+          >
             Browse Menu
           </button>
         </div>
       ) : (
-        <div style={{ padding: "16px" }}>
+        <div className="cart-content">
           <div className="cart-section-card">
-            <h3 className="cart-section-title">Your Items</h3>
+            <div className="section-head">
+              <h3>Your Items</h3>
+              <span>{cart.length} item(s)</span>
+            </div>
 
             {cart.map((item) => (
               <div key={item.id} className="cart-item-row">
-                <div>
-                  <h4 style={{ margin: "0 0 4px 0" }}>{item.name}</h4>
-                  <p style={{ margin: 0, color: "#FFC20E", fontWeight: "bold" }}>
-                    ₹{item.price}
-                  </p>
+                <div className="cart-item-info">
+                  <h4>{item.name}</h4>
+                  <p>₹{item.price}</p>
                 </div>
 
                 <div className="quantity-controls">
-                  <button
-                    onClick={() => updateQuantity(item.id, -1)}
-                    className="qty-btn"
-                  >
-                    -
-                  </button>
-                  <span style={{ fontWeight: "bold", minWidth: "16px", textAlign: "center" }}>
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, 1)}
-                    className="qty-btn"
-                  >
-                    +
-                  </button>
+                  <button onClick={() => updateQuantity(item.id, -1)}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.id, 1)}>+</button>
                 </div>
               </div>
             ))}
+            
+            <button 
+              className="add-more-items-btn" 
+              onClick={() => setCurrentPage("home")}
+            >
+              + Add More Items
+            </button>
           </div>
 
           <div className="cart-section-card">
-            <h3 className="cart-section-title">Order Type</h3>
+            <div className="section-head">
+              <h3>Order Type</h3>
+            </div>
 
-            <div className="order-type-tabs">
+            <div className="choice-grid">
               <button
-                className={`order-type-tab ${orderType === "table" ? "active" : ""}`}
+                className={`choice-card ${orderType === "table" ? "active" : ""}`}
                 onClick={() => setOrderType("table")}
               >
-                🍽 Dine-in
+                <span>🍽</span>
+                <strong>Dine-in</strong>
+                <small>Eat at table</small>
               </button>
 
               <button
-                className={`order-type-tab ${orderType === "delivery" ? "active" : ""}`}
+                className={`choice-card ${
+                  orderType === "delivery" ? "active" : ""
+                }`}
                 onClick={() => setOrderType("delivery")}
               >
-                🛵 Delivery
+                <span>🛵</span>
+                <strong>Delivery</strong>
+                <small>Free delivery</small>
               </button>
             </div>
 
             {orderType === "table" && (
-              <div className="table-input-container">
+              <div className="form-block">
                 <label>Table Number *</label>
                 <input
                   type="text"
@@ -189,7 +325,7 @@ const Cart = ({
             )}
 
             {orderType === "delivery" && (
-              <div className="table-input-container">
+              <div className="form-block">
                 <label>Customer Name *</label>
                 <input
                   type="text"
@@ -211,13 +347,93 @@ const Cart = ({
                 <label>Delivery Address *</label>
                 <textarea
                   className="table-input"
-                  placeholder="GPS address will be added later"
+                  placeholder="House no, area, landmark..."
                   rows={3}
                   value={deliveryAddress}
                   onChange={(e) => setDeliveryAddress(e.target.value)}
                 />
+
+                <button
+                  type="button"
+                  className={`location-btn ${
+                    deliveryLatitude && deliveryLongitude ? "location-added" : ""
+                  }`}
+                  onClick={handleUseCurrentLocation}
+                >
+                  {locationLoading
+                    ? "Getting Location..."
+                    : deliveryLatitude && deliveryLongitude
+                    ? "✅ Location Added"
+                    : "📍 Use Current Location"}
+                </button>
               </div>
             )}
+          </div>
+
+          <div className="cart-section-card">
+            <div className="section-head">
+              <h3>Payment Method</h3>
+            </div>
+
+            <div className="payment-list">
+              {orderType === "table" ? (
+                <>
+                  <button
+                    className={`payment-option ${
+                      paymentMethod === "pay_to_bearer" ? "active" : ""
+                    }`}
+                    onClick={() => setPaymentMethod("pay_to_bearer")}
+                  >
+                    <span>🧾</span>
+                    <div>
+                      <strong>Pay to Bearer</strong>
+                      <small>Pay after food is served</small>
+                    </div>
+                  </button>
+
+                  <button
+                    className={`payment-option ${
+                      paymentMethod === "online" ? "active" : ""
+                    }`}
+                    onClick={() => setPaymentMethod("online")}
+                  >
+                    <span>💳</span>
+                    <div>
+                      <strong>Pay Online</strong>
+                      <small>UPI / card payment</small>
+                    </div>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className={`payment-option ${
+                      paymentMethod === "cash_on_delivery" ? "active" : ""
+                    }`}
+                    onClick={() => setPaymentMethod("cash_on_delivery")}
+                  >
+                    <span>💵</span>
+                    <div>
+                      <strong>Cash on Delivery</strong>
+                      <small>Pay when food arrives</small>
+                    </div>
+                  </button>
+
+                  <button
+                    className={`payment-option ${
+                      paymentMethod === "online" ? "active" : ""
+                    }`}
+                    onClick={() => setPaymentMethod("online")}
+                  >
+                    <span>💳</span>
+                    <div>
+                      <strong>Pay Online</strong>
+                      <small>UPI / card payment</small>
+                    </div>
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="price-card">
@@ -228,12 +444,12 @@ const Cart = ({
 
             <div className="price-row">
               <span>Delivery Charges</span>
-              <span style={{ color: "green" }}>FREE</span>
+              <span className="free-text">FREE</span>
             </div>
 
-            <hr style={{ border: "none", borderTop: "1px dashed #eee", margin: "12px 0" }} />
+            <hr />
 
-            <div className="price-row" style={{ fontWeight: "bold", fontSize: "16px" }}>
+            <div className="price-row total-row">
               <span>Grand Total</span>
               <span>₹{totalAmount}</span>
             </div>
@@ -242,7 +458,6 @@ const Cart = ({
           <div className="sticky-checkout-bar">
             <div>
               <small>Total</small>
-              <br />
               <strong>₹{totalAmount}</strong>
             </div>
 
