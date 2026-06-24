@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/AdsSection.css";
 
-const AdsSection = ({ ads }) => {
+const AdsSection = ({ ads, menuItems = [], addToCart }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -23,14 +23,30 @@ const AdsSection = ({ ads }) => {
           className="ads-track"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {ads.map((ad) => (
-            <div className="ads-slide" key={ad.id}>
+          {ads.map((ad, index) => (
+
+            <div className="ads-slide" key={ad.id || index}>
               <div className={`menu-ad-card ${ad.ad_style}`}>
                 <div className="menu-ad-info">
                   <span>{ad.discount_text}</span>
                   <h3>{ad.title}</h3>
                   <p>{ad.description}</p>
-                  <button>{ad.button_text || "Order Now"}</button>
+                  <button
+  onClick={() => {
+    const item = menuItems.find(
+      (menuItem) => Number(menuItem.id) === Number(ad.menu_item_id)
+    );
+
+    if (!item) {
+      alert("This offer item is currently unavailable.");
+      return;
+    }
+
+    addToCart(item);
+  }}
+>
+  {ad.button_text || "Add to Cart"}
+</button>
                 </div>
 
                 {ad.image_url && <img src={ad.image_url} alt={ad.title} />}
@@ -41,7 +57,7 @@ const AdsSection = ({ ads }) => {
       </div>
 
       <div className="ads-dots">
-        {ads.map((_, index) => (
+        {ads.map((ad, index) => (
           <button
             key={index}
             className={currentIndex === index ? "active-dot" : ""}
